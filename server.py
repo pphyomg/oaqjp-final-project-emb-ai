@@ -17,8 +17,14 @@ def detect_emotion():
     text_to_analyze = request.args.get("textToAnalyze")
     # get the result by passing emotion_detector function
     response = emotion_detector(text_to_analyze)
-    # get dominant_emotion value only
+    # get dominant_emotion value
     dominant_emotion = response.get("dominant_emotion")
+    # Empty input handling
+    if dominant_emotion is None:
+        return "Invalid text! Please try again!"
+
+    # if dominant_emotion is not empty
+    dominant_output = f"The dominant emotion is {dominant_emotion}"
     # copy response dictionary without dominant emotion key
     remove_dominant_response = {k: v for k, v in response.items() if k != "dominant_emotion"}
     # covert the dictionary into list
@@ -27,7 +33,7 @@ def detect_emotion():
     output = ", ".join(convert_list[:-1])
 
     return f"For the given statement, the system response is {output} and " \
-        f"{convert_list[-1]}. The dominant emotion is {dominant_emotion}."
+        f"{convert_list[-1]}. {dominant_output}."
 
 @app.route("/")
 def index():
